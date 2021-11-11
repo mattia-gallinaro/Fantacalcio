@@ -353,43 +353,43 @@ namespace Fantacalcio
                 {
                     if (i == 0)
                     {
-                        Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come portiere");
+                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere");
                         risposta = Console.ReadLine();
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa");
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
                     }
                     else if(i <= 4)
                     {
-                        Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come difensore");
+                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore");
                         risposta = Console.ReadLine();
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito");
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
                     }
                     else if (i <= 7)
                     {
-                        Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come centrocampista");
+                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista");
                         risposta = Console.ReadLine();
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito");
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante");
+                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come attaccante");
                         risposta = Console.ReadLine();
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
@@ -399,7 +399,7 @@ namespace Fantacalcio
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
                     }
-                    giocatori[g_indice].AssegnazioneFormazione(ref giocatori[i].Rosa, posizione);
+                    giocatori[g_indice].AssegnazioneFormazione(ref giocatori[g_indice].Rosa, posizione);
                 }
                 g_indice++;
             }
