@@ -58,9 +58,14 @@ namespace Fantacalcio
     {
         public string nome { get; set; }
         public int punteggio { get; set; }
+        public int punteggio_totale { get; set; }
         public int crediti { get; set; }
         public List<Calciatore> Rosa = new List<Calciatore>();
         public List<Calciatore> Formazione = new List<Calciatore>();
+        public Giocatori()
+        {
+
+        }
         public bool ControlloNomeInserito(string risposta, string[] nomigiocatori)
         {
             bool verifica = false;
@@ -184,6 +189,14 @@ namespace Fantacalcio
             Formazione[Formazione.Count - 1].costo = calciatores[indice_c].costo;
             calciatores[indice_c].gia_assegnato = true;
         }
+        public void CalcolaPunteggio()
+        {
+            for(int i = 0; i < Formazione.Count; i++)
+            {
+                punteggio += Formazione[i].PunteggioPartita;
+            }
+            punteggio_totale += punteggio;
+        }
     }
     
     class Partita
@@ -229,11 +242,13 @@ namespace Fantacalcio
             }
             return array;//ritorno l'array con gli indici delle partite
         }
-        public void AssegnazionePunteggioCalciatore()
+        public int AssegnazionePunteggioCalciatore()
         {
-
+            Random random = new Random();
+            int numero_generato = random.Next(2, 12);
+            return numero_generato;
         }
-        public void Classifica(ref List<Giocatori> giocatori)
+        public void ClassificaProvvisoria(ref List<Giocatori> giocatori)
         {
             bool controllo;//variabile booleana
             do
@@ -249,10 +264,47 @@ namespace Fantacalcio
                 }
             } while (controllo);//si ripete fino a quando il valore della variabile booleana corrisponde a false
         }
+        public void ClassificaFinale(ref List<Giocatori> giocatori)
+        {
+            bool controllo;//variabile booleana
+            do
+            {
+                controllo = false;//riassegna false a controllo sennò continuerebbe all'infinito
+                for (int i = 0; i < (giocatori.Count - 1); i++)//il ciclo si ripete per la quantità di squadre presenti nella lista bubble diminuito di 1
+                {
+                    if (giocatori[i].punteggio_totale < giocatori[i + 1].punteggio_totale)//controlla se il punteggio della squadra in posizione i della lista bubble sia minore del punteggio della squadra in posizione successiva ad i nella lista bubbble
+                    {
+                        giocatori.Reverse(i, 2);//scambio i due elementi della lista 
+                        controllo = true;
+                    }
+                }
+            } while (controllo);//si ripete fino a quando il valore della variabile booleana corrisponde a false
+        }
         public int GestionePartita(ref List<Giocatori> giocatores, int indice_1, int indice_2)
         {
-            int n = 0;
-
+            int n;
+            for(int i  = 0; i< giocatores[indice_1].Formazione.Count; i++)
+            {
+                giocatores[indice_1].Formazione[i].PunteggioPartita = AssegnazionePunteggioCalciatore();
+            }
+            for (int i = 0; i < giocatores[indice_2].Formazione.Count; i++)
+            {
+                giocatores[indice_2].Formazione[i].PunteggioPartita = AssegnazionePunteggioCalciatore();
+            }
+            giocatores[indice_1].CalcolaPunteggio();
+            giocatores[indice_2].CalcolaPunteggio();
+            if(giocatores[indice_1].punteggio > giocatores[indice_2].punteggio)
+            {
+                n = 2;
+            }
+            else if (giocatores[indice_1].punteggio < giocatores[indice_2].punteggio)
+            {
+                n = 1;
+            }
+            else
+            {
+                n = 0;
+            }
             return n;
         }
     }
@@ -263,178 +315,199 @@ namespace Fantacalcio
             string[] calciatorifile;
             string[] nomigiocatori = new string[0];
             string filecalciatoripath = AppDomain.CurrentDomain.BaseDirectory + "Calciatori.txt";
-            calciatorifile = File.ReadAllLines(filecalciatoripath);
-            List<Calciatore> calciatori = new List<Calciatore>();
-            Calciatore c = new Calciatore();
-            Giocatori g = new Giocatori();
-            Partita p = new Partita();
-            calciatori = c.GetCalciatori(calciatorifile);
-            for(int i = 0; i < calciatori.Count; i++)
+            if (!File.Exists(filecalciatoripath))
             {
-                Console.WriteLine($"{calciatori[i].nome_e_cognome}");
+                File.Create(filecalciatoripath);
+                Console.WriteLine("Dato che non hai un file Calciatori.txt in cui sono contenuti i calciatori\n ne creo uno vuoto all'interno di esso inserisci i calciatori in questo modo\n ex. musso juan,portiere,atalanta,false");
             }
-            string risposta;
-            do
+            else
             {
-                Console.WriteLine("Quanti giocatori vuoi inserire ? Il numero minimo e' 2 ed il massimo e' 10");
-                risposta = Console.ReadLine();
-            } while (!ControlloQuantità(risposta));
-
-            int quantità = int.Parse(risposta);
-
-            for(int i = 0; i < quantità;i++)
-            {
-                Console.WriteLine("inserisci il nome del "+ (i+1) + "° giocatore");
-                risposta = Console.ReadLine();
-                if (g.ControlloNomeInserito(risposta, nomigiocatori))
+                calciatorifile = File.ReadAllLines(filecalciatoripath);
+                List<Calciatore> calciatori = new List<Calciatore>();
+                Calciatore c = new Calciatore();
+                Giocatori g = new Giocatori();
+                Partita p = new Partita();
+                calciatori = c.GetCalciatori(calciatorifile);
+                for (int i = 0; i < calciatori.Count; i++)
                 {
-                    i--;
+                    Console.WriteLine($"{calciatori[i].nome_e_cognome}");
                 }
-                else
+                string risposta;
+                do
                 {
-                    Array.Resize(ref nomigiocatori, nomigiocatori.Length + 1);
-                    nomigiocatori[i] = risposta;
-                }
-            }
-            List<Giocatori> giocatori = new List<Giocatori>();
-            for(int i = 0; i < nomigiocatori.Length; i++)
-            {
-                giocatori.Add(new Giocatori());
-                giocatori[i].nome = nomigiocatori[i];
-                giocatori[i].crediti = 1100;
-            }
-            int[] prezzo = new int[giocatori.Count];
-            int indice;
-            int posizione = -1;
-            //chiedo all'utente il calciatore da mettere all'asta
-            do
-            {
-                risposta = "";
-                Console.WriteLine("Inserisci il nome del calciatore da mettere all'asta (es mauro juan)");
-                risposta = Console.ReadLine();
-                posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);
-                while (posizione < 0)
-                {
-                    Console.WriteLine("Il giocatore inserito non esiste oppure e' gia' stato assegnato\n Inserisci un'altro giocatore");
+                    Console.WriteLine("Quanti giocatori vuoi inserire ? Il numero minimo e' 2 ed il massimo e' 10");
                     risposta = Console.ReadLine();
-                    posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);
-                }
-                int i;
-                for(i = 0; i < giocatori.Count; i++)
-                {
-                    do
-                    {
-                        Console.WriteLine($"Giocatore {giocatori[i].nome} inserisci il prezzo per l'asta per il calciatore");
-                        prezzo[i] = giocatori[i].ControlloPrezzoInserito();
-                    } while (prezzo[i] > 110);
-                }
-                indice = g.Asta(prezzo);
-                Console.WriteLine($"{giocatori[indice].nome} ha vinto {calciatori[posizione].nome_e_cognome}");
-                giocatori[indice].AssegnazioneRosa(ref calciatori, posizione, prezzo[indice]);
-                Console.WriteLine($"{giocatori[indice].crediti}");
-                if (!g.ControlloRose(ref giocatori))
-                {
-                    Console.WriteLine("Vuoi terminare l'asta?\n Se si allora scrivi yes \n in caso tu voglia continuare l'asta");
-                    risposta = Console.ReadLine();
-                }
-            } while (risposta != "Yes" && risposta != "Y" && risposta != "yes" && risposta!= "y");
-            Console.WriteLine("Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3");
-            //chiedo all'utente le formazioni di ogni giocatore
-            int g_indice;
-            for(g_indice = 0; g_indice < giocatori.Count; g_indice++)
-            {
-                Console.WriteLine($"Rosa di {giocatori[g_indice].nome}");
-                for (int j= 0; j < giocatori[g_indice].Rosa.Count; j++)
-                {
-                    Console.WriteLine($"{giocatori[g_indice].Rosa[j].nome_e_cognome}");
+                } while (!ControlloQuantità(risposta));
 
-                }
-                for(int i  = 0; i< 12; i++)
+                int quantità = int.Parse(risposta);
+
+                for (int i = 0; i < quantità; i++)
                 {
-                    if (i == 0)
+                    Console.WriteLine("inserisci il nome del " + (i + 1) + "° giocatore");
+                    risposta = Console.ReadLine();
+                    if (g.ControlloNomeInserito(risposta, nomigiocatori))
                     {
-                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere");
-                        risposta = Console.ReadLine();
-                        posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                        while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
-                        {
-                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa");
-                            risposta = Console.ReadLine();
-                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                        }
-                    }
-                    else if(i <= 4)
-                    {
-                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore");
-                        risposta = Console.ReadLine();
-                        posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                        while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
-                        {
-                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito");
-                            risposta = Console.ReadLine();
-                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                        }
-                    }
-                    else if (i <= 7)
-                    {
-                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista");
-                        risposta = Console.ReadLine();
-                        posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                        while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
-                        {
-                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito");
-                            risposta = Console.ReadLine();
-                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                        }
+                        i--;
                     }
                     else
                     {
-                        Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come attaccante");
+                        Array.Resize(ref nomigiocatori, nomigiocatori.Length + 1);
+                        nomigiocatori[i] = risposta;
+                    }
+                }
+                List<Giocatori> giocatori = new List<Giocatori>();
+                for (int i = 0; i < nomigiocatori.Length; i++)
+                {
+                    giocatori.Add(new Giocatori());
+                    giocatori[i].nome = nomigiocatori[i];
+                    giocatori[i].crediti = 1100;
+                }
+                int[] prezzo = new int[giocatori.Count];
+                int indice;
+                int posizione = -1;
+                //chiedo all'utente il calciatore da mettere all'asta
+                do
+                {
+                    risposta = "";
+                    Console.WriteLine("Inserisci il nome del calciatore da mettere all'asta (es mauro juan)");
+                    risposta = Console.ReadLine();
+                    posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);
+                    while (posizione < 0)
+                    {
+                        Console.WriteLine("Il giocatore inserito non esiste oppure e' gia' stato assegnato\n Inserisci un'altro giocatore");
                         risposta = Console.ReadLine();
-                        posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                        while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                        posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);
+                    }
+                    int i;
+                    for (i = 0; i < giocatori.Count; i++)
+                    {
+                        do
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante che non sia gia' stato inserito");
+                            Console.WriteLine($"Giocatore {giocatori[i].nome} inserisci il prezzo per l'asta per il calciatore");
+                            prezzo[i] = giocatori[i].ControlloPrezzoInserito();
+                        } while (prezzo[i] > 110);
+                    }
+                    indice = g.Asta(prezzo);
+                    Console.WriteLine($"{giocatori[indice].nome} ha comprato il calciatore {calciatori[posizione].nome_e_cognome}");
+                    giocatori[indice].AssegnazioneRosa(ref calciatori, posizione, prezzo[indice]);
+                    Console.WriteLine($"{giocatori[indice].crediti}");
+                    if (!g.ControlloRose(ref giocatori))
+                    {
+                        Console.WriteLine("Vuoi terminare l'asta?\n Se si allora scrivi yes \n in caso tu voglia continuare l'asta");
+                        risposta = Console.ReadLine();
+                    }
+                } while (risposta != "Yes" && risposta != "Y" && risposta != "yes" && risposta != "y");
+                Console.WriteLine("Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3");
+                //chiedo all'utente le formazioni di ogni giocatore
+                int g_indice;
+                for (g_indice = 0; g_indice < giocatori.Count; g_indice++)
+                {
+                    Console.WriteLine($"Rosa di {giocatori[g_indice].nome}");
+                    for (int j = 0; j < giocatori[g_indice].Rosa.Count; j++)
+                    {
+                        Console.WriteLine($"{giocatori[g_indice].Rosa[j].nome_e_cognome}");
+
+                    }
+                    for (int i = 0; i < 12; i++)
+                    {
+                        if (i == 0)
+                        {
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            {
+                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa");
+                                risposta = Console.ReadLine();
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            }
                         }
+                        else if (i <= 4)
+                        {
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore");
+                            risposta = Console.ReadLine();
+                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            {
+                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito");
+                                risposta = Console.ReadLine();
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            }
+                        }
+                        else if (i <= 7)
+                        {
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista");
+                            risposta = Console.ReadLine();
+                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            {
+                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito");
+                                risposta = Console.ReadLine();
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come attaccante");
+                            risposta = Console.ReadLine();
+                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            {
+                                Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante che non sia gia' stato inserito");
+                                risposta = Console.ReadLine();
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                            }
+                        }
+                        giocatori[g_indice].AssegnazioneFormazione(ref giocatori[g_indice].Rosa, posizione);
                     }
-                    giocatori[g_indice].AssegnazioneFormazione(ref giocatori[g_indice].Rosa, posizione);
                 }
-                g_indice++;
-            }
-            do
-            {
-                Console.WriteLine("");
-                int[] indici = p.GenerazionePartita(giocatori.Count);
-                int n1 = 0;
-                for (int j = 0; j < 7; j++)
+                do
                 {
-                    for (int i = 0; i < giocatori.Count; i += 2)
+                    Console.WriteLine("");
+                    int[] indici = p.GenerazionePartita(giocatori.Count);
+                    int n1 = 0;
+                    for (int j = 0; j < 7; j++)
                     {
-                        n1++;
-                        Console.WriteLine($"Girone {n1} di {indici.Length / 2}");
-                        Console.WriteLine($"Si sfideranno {giocatori[indici[i]].nome} contro {giocatori[indici[i + 1]].nome}");
+                        Console.WriteLine($"Giornata {j + 1} di 7\n");
+                        for (int i = 0; i < giocatori.Count; i += 2)
+                        {
+                            n1++;
+                            Console.WriteLine($"Girone {n1} di {indici.Length / 2}");
+                            Console.WriteLine($"Si sfideranno {giocatori[indici[i]].nome} contro {giocatori[indici[i + 1]].nome}");
 
-                        int valore = p.GestionePartita(ref giocatori, indici[i], indici[i + 1]);//invoca la funzione GestionePartita e il valore che ritorna viene assegnato ad risposte[5]
-                        if (valore == 2)//nel caso in cui il valore ritornato corrisponde a 2
-                        {
-                            Console.WriteLine($"in questa partita ha vinto la squadra {giocatori[indici[i]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
+                            int valore = p.GestionePartita(ref giocatori, indici[i], indici[i + 1]);//invoca la funzione GestionePartita e il valore che ritorna viene assegnato ad risposte[5]
+                            if (valore == 2)//nel caso in cui il valore ritornato corrisponde a 2
+                            {
+                                Console.WriteLine($"in questa partita ha vinto la squadra {giocatori[indici[i]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
+                            }
+                            else if (valore == 1)//nel caso in cui il valore ritornato corrisponde a 1
+                            {
+                                Console.WriteLine($"In questa partita ha vinto la squadra {giocatori[indici[i + 1]].nome}");//viene scritto a schermo che la seconda squadra delle due squadre della partita, ha vinto 
+                            }
+                            else//nel caso in cui il valore ritornato corrisponde a 0
+                            {
+                                Console.WriteLine("Questa partita è terminata in pareggio");//viene scritto a schermo che la partita è terminata con il pareggio delle due squadre
+                            }
+                            giocatori[indici[i]].punteggio = 0;
+                            giocatori[indici[i+1]].punteggio = 0;
                         }
-                        else if (valore == 1)//nel caso in cui il valore ritornato corrisponde a 1
-                        {
-                            Console.WriteLine($"In questa partita ha vinto la squadra {giocatori[indici[i + 1]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
-                        }
-                        else//nel caso in cui il valore ritornato corrisponde a 0
-                        {
-                            Console.WriteLine("Questa partita è terminata in pareggio");//viene scritto a schermo che la partita è terminata con il pareggio delle due squadre
-                        }
+                        n1 = 0;
                     }
+                    p.ClassificaProvvisoria(ref giocatori);
+                    for(int d  = 0; d < giocatori.Count; d++)
+                    {
+                        Console.WriteLine($"In {d+1}° posizione abbiamo {giocatori[d].nome}");
+                    }
+                    Console.WriteLine("Scrivi yes per terminare il campionato");
+                    risposta = Console.ReadLine();
+                } while (risposta != "yes" && risposta != "y");
+                p.ClassificaFinale(ref giocatori);
+                for (int d = 0; d < giocatori.Count; d++)
+                {
+                    Console.WriteLine($"In {d + 1}° posizione abbiamo {giocatori[d].nome}");
                 }
-                Console.WriteLine("Scrivi yes per terminare il campionato");
-                risposta = Console.ReadLine();
-            } while (risposta != "yes" || risposta != "y");
-            Console.WriteLine(".");
+                Console.WriteLine("Grazie per aver giocato");
+            }
         }
         private static bool ControlloQuantità(string risposta)
         {
@@ -454,17 +527,6 @@ namespace Fantacalcio
             {
                 return false;
             }
-        }
-        private void ControlloFile(string path)
-        {
-            if (!File.Exists(path))
-            {
-
-            }
-        }
-        private void CreaFile(string path)
-        {
-
         }
     }
 }
