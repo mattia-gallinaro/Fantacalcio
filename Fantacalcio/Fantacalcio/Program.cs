@@ -113,7 +113,6 @@ namespace Fantacalcio
                 if(max < prezzi[i])
                 {
                     max = prezzi[i];
-                    //Console.WriteLine($"\n{prezzi[i]}");
                 }        
             }
             int m = 0;
@@ -123,20 +122,17 @@ namespace Fantacalcio
                 {
                     Array.Resize(ref indici, indici.Length + 1);
                     indici[m] = j;
-                    //Console.WriteLine($"\n{j}\n{indici[m]}");
                     m++;
                 }
             }
             if(indici.Length == 1)
             {
-                //Console.WriteLine($"\n{indici[0]}");
                 return indici[0];
             }
             else
             {
                 Random random = new Random();
                 int numero_generato = random.Next(0, indici.Length);
-                //Console.WriteLine($"\n{indici[numero_generato]}"); era per controllare la generazione dell'indice del giocatore che ottiene il calciatore durante l'asta
                 return indici[numero_generato];
             }
         }
@@ -152,13 +148,14 @@ namespace Fantacalcio
             }
             return controllo;
         }
-        public void AssegnazioneRosa(ref List<Calciatore> calciatores, int indice_c)
+        public void AssegnazioneRosa(ref List<Calciatore> calciatores, int indice_c,int prezzo)
         {
             Rosa.Add(new Calciatore());
             Rosa[Rosa.Count-1].nome_e_cognome = calciatores[indice_c].nome_e_cognome;
             Rosa[Rosa.Count-1].sqaudra = calciatores[indice_c].sqaudra;
             Rosa[Rosa.Count-1].ruolo = calciatores[indice_c].ruolo;
-            Rosa[Rosa.Count-1].costo = calciatores[indice_c].costo;
+            Rosa[Rosa.Count-1].costo = prezzo;
+            calciatores[indice_c].gia_assegnato = true;
             crediti -= Rosa[Rosa.Count-1].costo;
 
         }
@@ -181,11 +178,11 @@ namespace Fantacalcio
         public void AssegnazioneFormazione(ref List<Calciatore> calciatores, int indice_c)
         {
             Formazione.Add(new Calciatore());
-            Formazione[Rosa.Count - 1].nome_e_cognome = calciatores[indice_c].nome_e_cognome;
-            Formazione[Rosa.Count - 1].sqaudra = calciatores[indice_c].sqaudra;
-            Formazione[Rosa.Count - 1].ruolo = calciatores[indice_c].ruolo;
-            Formazione[Rosa.Count - 1].costo = calciatores[indice_c].costo;
-            crediti -= Rosa[Rosa.Count - 1].costo;
+            Formazione[Formazione.Count - 1].nome_e_cognome = calciatores[indice_c].nome_e_cognome;
+            Formazione[Formazione.Count - 1].sqaudra = calciatores[indice_c].sqaudra;
+            Formazione[Formazione.Count - 1].ruolo = calciatores[indice_c].ruolo;
+            Formazione[Formazione.Count - 1].costo = calciatores[indice_c].costo;
+            calciatores[indice_c].gia_assegnato = true;
         }
     }
     
@@ -252,7 +249,7 @@ namespace Fantacalcio
                 }
             } while (controllo);//si ripete fino a quando il valore della variabile booleana corrisponde a false
         }
-        public int GestionePartita()
+        public int GestionePartita(ref List<Giocatori> giocatores, int indice_1, int indice_2)
         {
             int n = 0;
 
@@ -315,6 +312,7 @@ namespace Fantacalcio
                 risposta = "";
                 Console.WriteLine("Inserisci il nome del calciatore da mettere all'asta (es mauro juan)");
                 risposta = Console.ReadLine();
+                posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);
                 while (posizione < 0)
                 {
                     Console.WriteLine("Il giocatore inserito non esiste oppure e' gia' stato assegnato\n Inserisci un'altro giocatore");
@@ -332,12 +330,13 @@ namespace Fantacalcio
                 }
                 indice = g.Asta(prezzo);
                 Console.WriteLine($"{giocatori[indice].nome} ha vinto {calciatori[posizione].nome_e_cognome}");
-                giocatori[indice].AssegnazioneRosa(ref calciatori, posizione);
+                giocatori[indice].AssegnazioneRosa(ref calciatori, posizione, prezzo[indice]);
+                Console.WriteLine($"{giocatori[indice].crediti}");
                 if (!g.ControlloRose(ref giocatori))
                 {
                     Console.WriteLine("Vuoi terminare l'asta?\n Se si allora scrivi yes \n in caso tu voglia continuare l'asta");
+                    risposta = Console.ReadLine();
                 }
-                risposta = "";
             } while (risposta != "Yes" && risposta != "Y" && risposta != "yes" && risposta!= "y");
             Console.WriteLine("Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3");
             //chiedo all'utente le formazioni di ogni giocatore
@@ -359,7 +358,7 @@ namespace Fantacalcio
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come portiere");
+                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
@@ -371,7 +370,7 @@ namespace Fantacalcio
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come difensore");
+                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
@@ -383,7 +382,7 @@ namespace Fantacalcio
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come centrocampista");
+                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
@@ -395,12 +394,12 @@ namespace Fantacalcio
                         posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
                         {
-                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante");
+                            Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante che non sia gia' stato inserito");
                             risposta = Console.ReadLine();
                             posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
                         }
                     }
-                    giocatori[i].AssegnazioneFormazione(ref giocatori[i].Rosa, posizione);
+                    giocatori[g_indice].AssegnazioneFormazione(ref giocatori[i].Rosa, posizione);
                 }
                 g_indice++;
             }
@@ -409,26 +408,31 @@ namespace Fantacalcio
                 Console.WriteLine("");
                 int[] indici = p.GenerazionePartita(giocatori.Count);
                 int n1 = 0;
-                for(int i = 0; i < giocatori.Count; i+=2)
+                for (int j = 0; j < 7; j++)
                 {
-                    n1++;
-                    Console.WriteLine($"Girone {n1} di {indici.Length / 2}");
-                    Console.WriteLine($"Si sfideranno {giocatori[indici[i]].nome} contro {giocatori[indici[i+1]].nome}");
+                    for (int i = 0; i < giocatori.Count; i += 2)
+                    {
+                        n1++;
+                        Console.WriteLine($"Girone {n1} di {indici.Length / 2}");
+                        Console.WriteLine($"Si sfideranno {giocatori[indici[i]].nome} contro {giocatori[indici[i + 1]].nome}");
 
-                    int valore = p.GestionePartita(ref squadre, risposte, indici[i], indici[i + 1]);//invoca la funzione GestionePartita e il valore che ritorna viene assegnato ad risposte[5]
-                    if (valore == 2)//nel caso in cui il valore ritornato corrisponde a 2
-                    {
-                        Console.WriteLine($"in questa partita ha vinto la squadra {giocatori[indici[i]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
-                    }
-                    else if (valore == 1)//nel caso in cui il valore ritornato corrisponde a 1
-                    {
-                        Console.WriteLine($"In questa partita ha vinto la squadra {giocatori[indici[i + 1]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
-                    }
-                    else//nel caso in cui il valore ritornato corrisponde a 0
-                    {
-                        Console.WriteLine("Questa partita è terminata in pareggio");//viene scritto a schermo che la partita è terminata con il pareggio delle due squadre
+                        int valore = p.GestionePartita(ref giocatori, indici[i], indici[i + 1]);//invoca la funzione GestionePartita e il valore che ritorna viene assegnato ad risposte[5]
+                        if (valore == 2)//nel caso in cui il valore ritornato corrisponde a 2
+                        {
+                            Console.WriteLine($"in questa partita ha vinto la squadra {giocatori[indici[i]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
+                        }
+                        else if (valore == 1)//nel caso in cui il valore ritornato corrisponde a 1
+                        {
+                            Console.WriteLine($"In questa partita ha vinto la squadra {giocatori[indici[i + 1]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
+                        }
+                        else//nel caso in cui il valore ritornato corrisponde a 0
+                        {
+                            Console.WriteLine("Questa partita è terminata in pareggio");//viene scritto a schermo che la partita è terminata con il pareggio delle due squadre
+                        }
                     }
                 }
+                Console.WriteLine("Scrivi yes per terminare il campionato");
+                risposta = Console.ReadLine();
             } while (risposta != "yes" || risposta != "y");
             Console.WriteLine(".");
         }
@@ -437,7 +441,7 @@ namespace Fantacalcio
             try
             {
                 int numero = int.Parse(risposta);
-                if (numero < 2 || numero > 10)
+                if (numero < 2 || numero > 10 || numero %2 != 0)
                 {
                     return false;
                 }
@@ -450,6 +454,17 @@ namespace Fantacalcio
             {
                 return false;
             }
+        }
+        private void ControlloFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+
+            }
+        }
+        private void CreaFile(string path)
+        {
+
         }
     }
 }
