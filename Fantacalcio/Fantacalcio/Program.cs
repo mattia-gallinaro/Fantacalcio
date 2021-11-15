@@ -168,12 +168,12 @@ namespace Fantacalcio
         public void AssegnazioneRosa(ref List<Calciatore> calciatores, int indice_c,int prezzo)//metodo che serve per assegnare il calciatore comprato nell'asta al giocatore che l'ha ottenuto
         {
             Rosa.Add(new Calciatore());//aggiunge un nuovo elemento alla lista Rosa del giocatore
-            Rosa[Rosa.Count-1].nome_e_cognome = calciatores[indice_c].nome_e_cognome;//
-            Rosa[Rosa.Count-1].sqaudra = calciatores[indice_c].sqaudra;
-            Rosa[Rosa.Count-1].ruolo = calciatores[indice_c].ruolo;
-            Rosa[Rosa.Count-1].costo = prezzo;
-            calciatores[indice_c].gia_assegnato = true;
-            crediti -= Rosa[Rosa.Count-1].costo;
+            Rosa[Rosa.Count-1].nome_e_cognome = calciatores[indice_c].nome_e_cognome;//assegna il nome_e_cognome di calciatores in indice_c al nome_e_cognome dell'ultimo giocatore della rosa del giocatore 
+            Rosa[Rosa.Count-1].sqaudra = calciatores[indice_c].sqaudra;//assegna la sqaudra di calciatores in indice_c alla sqaudra dell'ultimo giocatore della rosa del giocatore 
+            Rosa[Rosa.Count-1].ruolo = calciatores[indice_c].ruolo;//assegna il ruolo di calciatores in indice_c al ruolo dell'ultimo giocatore della rosa del giocatore 
+            Rosa[Rosa.Count-1].costo = prezzo;//assegna alla variabile costo il prezzo dell'asta
+            calciatores[indice_c].gia_assegnato = true;//assegna a gia_assegnato di calciatores valore pari a true
+            crediti -= Rosa[Rosa.Count-1].costo;//diminuisce il valore dei crediti del giocatore in base al costo del calciatore
 
         }
         public int ControlloGiocatoreFormazione(ref List<Calciatore> calciatores, string risposta)//metodo per controllare se il calciatore che il giocatore vuole inserire nella formazione gli appertiene o è già stato assegnato 
@@ -192,32 +192,32 @@ namespace Fantacalcio
             return n;//ritorna il valore di n
         }
             
-        public void AssegnazioneFormazione(ref List<Calciatore> calciatores, int indice_c)
+        public void AssegnazioneFormazione(ref List<Calciatore> calciatores, int indice_c)//metodo che assegna i calciatori nella lista Formazione del giocatore
         {
             Formazione.Add(new Calciatore());
-            Formazione[Formazione.Count - 1].nome_e_cognome = calciatores[indice_c].nome_e_cognome;
-            Formazione[Formazione.Count - 1].sqaudra = calciatores[indice_c].sqaudra;
-            Formazione[Formazione.Count - 1].ruolo = calciatores[indice_c].ruolo;
-            Formazione[Formazione.Count - 1].costo = calciatores[indice_c].costo;
-            calciatores[indice_c].gia_assegnato = true;
+            Formazione[Formazione.Count - 1].nome_e_cognome = calciatores[indice_c].nome_e_cognome;//assegna il nome_e_cognome di calciatores in indice_c al nome_e_cognome dell'ultimo giocatore della formazione del giocatore 
+            Formazione[Formazione.Count - 1].sqaudra = calciatores[indice_c].sqaudra;//assegna il sqaudra di calciatores in indice_c al sqaudra dell'ultimo giocatore della formazione del giocatore 
+            Formazione[Formazione.Count - 1].ruolo = calciatores[indice_c].ruolo;//assegna il ruolo di calciatores in indice_c al ruolo dell'ultimo giocatore della formazione del giocatore 
+            Formazione[Formazione.Count - 1].costo = calciatores[indice_c].costo;//assegna il costo di calciatores in indice_c al costo dell'ultimo giocatore della formazione del giocatore 
+            calciatores[indice_c].gia_assegnato = true;//assegna a gia_assegnato di calciatores valore pari a true 
         }
         public void CalcolaPunteggio()//metodo che aumenta il punteggio di ciascun giocatore della lista giocatori
         {
-            for(int i = 0; i < Formazione.Count; i++)
+            for(int i = 0; i < Formazione.Count; i++)//ciclo for che si ripete per tutti i calciatori presenti nella formazione del calciatore
             {
-                punteggio += Formazione[i].PunteggioPartita;
+                punteggio += Formazione[i].PunteggioPartita;//aumenta il punteggio del giocatore con quello del giocatore
             }
-            punteggio_totale += punteggio;
+            punteggio_totale += punteggio;//aumenta il punteggio totale con il punteggio del giocatore
         }
     }
     
     class Partita
     {
-        public Partita()
+        public Partita()//costruttore della classe Partita
         {
 
         }
-        public int[] GenerazionePartita(int quantita)
+        public int[] GenerazionePartita(int quantita)//metodo che genera gli indici delle squadre che giocano
         {
             int[] array = new int[quantita];//array che contiene gli indici da generare per le partite
             Random random = new Random();//crea un'istanza della classe Random
@@ -306,19 +306,19 @@ namespace Fantacalcio
             }
             giocatores[indice_1].CalcolaPunteggio();//invoca il metodo CalcolaPunteggio per il primo giocatore della partita
             giocatores[indice_2].CalcolaPunteggio();//invoca il metodo CalcolaPunteggio per il secondo giocatore della partita
-            if (giocatores[indice_1].punteggio > giocatores[indice_2].punteggio)//se il punteggio
+            if (giocatores[indice_1].punteggio > giocatores[indice_2].punteggio)//controlla se il punteggio del primo giocatore è maggiore di quello del secondo
             {
-                n = 2;
+                n = 2;//assegna 2 al valore di n
             }
-            else if (giocatores[indice_1].punteggio < giocatores[indice_2].punteggio)
+            else if (giocatores[indice_1].punteggio < giocatores[indice_2].punteggio)//controlla se il punteggio del primo giocatore è minore di quello del secondo
             {
-                n = 1;
+                n = 1;//assegna 1 al valore di n
             }
             else
             {
-                n = 0;
+                n = 0;//assegna 0 al valore di n
             }
-            return n;
+            return n;//ritorna il valore di n
         }
     }
     class Program
@@ -411,83 +411,83 @@ namespace Fantacalcio
                 } while (risposta != "Yes" && risposta != "Y" && risposta != "yes" && risposta != "y");
                 Console.WriteLine("Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3");//scrive a schermo Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3
                 //chiedo all'utente le formazioni di ogni giocatore
-                int g_indice;
-                for (g_indice = 0; g_indice < giocatori.Count; g_indice++)
+                int g_indice;//variabile per l'indirizzo del giocatore della lista 
+                for (g_indice = 0; g_indice < giocatori.Count; g_indice++)//ciclo for per l'inserimento delle funzioni
                 {
-                    Console.WriteLine($"Rosa di {giocatori[g_indice].nome}");
-                    for (int j = 0; j < giocatori[g_indice].Rosa.Count; j++)
+                    Console.WriteLine($"Rosa di {giocatori[g_indice].nome}");//scrive a schermo il nome del giocatore in indice_g
+                    for (int j = 0; j < giocatori[g_indice].Rosa.Count; j++)//scrive a schermo la rosa del giocatore di indice_g
                     {
                         Console.WriteLine($"{giocatori[g_indice].Rosa[j].nome_e_cognome}");
 
                     }
-                    for (int i = 0; i < 12; i++)
+                    for (int i = 0; i < 12; i++)//ciclo for che si ripete per l'inserimento delle formazioni per i giocatori
                     {
-                        if (i == 0)
+                        if (i == 0)//controlla se i corrisponde a 0 per l'inserimento del portiere
                         {
-                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere");
-                            risposta = Console.ReadLine();
-                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere");//scrive a schermo Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere
+                            risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
+                            while (posizione < 0)//controlla che il valore di posizione sia maggiore di 0
                             {
-                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa");
-                                risposta = Console.ReadLine();
-                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa");//scrive a schermo Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come portiere che appartenga alla rosa
+                                risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
                             }
                         }
-                        else if (i <= 4)
+                        else if (i <= 4)//controlla se i è uguale o minore di 4 per l'inserimento dei difensori
                         {
-                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore");
-                            risposta = Console.ReadLine();
-                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore");//scrive a schermo Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore
+                            risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
+                            while (posizione < 0)//controlla che il valore di posizione sia maggiore di 0
                             {
-                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito");
-                                risposta = Console.ReadLine();
-                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito");//scrive a schermo Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come difensore che non sia gia' stato inserito
+                                risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
                             }
                         }
-                        else if (i <= 7)
+                        else if (i <= 7)//controlla se i è uguale o minore di 4 per l'inserimento dei difensori
                         {
-                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista");
-                            risposta = Console.ReadLine();
-                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista");//scrive a schermo Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista
+                            risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
+                            while (posizione < 0)//controlla che il valore di posizione sia maggiore di 0
                             {
-                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito");
-                                risposta = Console.ReadLine();
-                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                                Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito");//scrive a schermo Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come centrocampista che non sia gia' stato inserito
+                                risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
                             }
                         }
-                        else
+                        else//per l'inserimento degli attaccanti
                         {
-                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come attaccante");
-                            risposta = Console.ReadLine();
-                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
-                            while (posizione < 0)//pongo il controllo che il giocatore appartenga alla rosa del giocatore e non sia già stato assegnato
+                            Console.WriteLine($"Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come attaccante");//scrive a schermo Giocatore {giocatori[g_indice].nome} inserisci il nome del giocatore da inserire nella formazione come attaccante
+                            risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                            posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
+                            while (posizione < 0)//controlla che il valore di posizione sia maggiore di 0
                             {
-                                Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante che non sia gia' stato inserito");
-                                risposta = Console.ReadLine();
-                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);
+                                Console.WriteLine($"Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante che non sia gia' stato inserito");//scrive a schermo Giocatore {g_indice + 1} inserisci il nome del giocatore da inserire nella formazione come attaccante che non sia gia' stato inserito
+                                risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                                posizione = giocatori[g_indice].ControlloGiocatoreFormazione(ref giocatori[g_indice].Rosa, risposta);//invoca il metodo ControlloGiocatoreFormazione e passa come parametri la rosa del giocatore e la risposta e il valroe che viene ritornato viene assegnato a posizione
                             }
                         }
-                        giocatori[g_indice].AssegnazioneFormazione(ref giocatori[g_indice].Rosa, posizione);
+                        giocatori[g_indice].AssegnazioneFormazione(ref giocatori[g_indice].Rosa, posizione);//invoca il metoodo AssegnazioneFormazione passando parametri la rosa del giocatore e posizione
                     }
                 }
                 do
                 {
-                    Console.WriteLine("");
-                    int[] indici = p.GenerazionePartita(giocatori.Count);
+                    Console.WriteLine("");//serve per fare spazio
+                    int[] indici = p.GenerazionePartita(giocatori.Count);//invoca il metodo GenerezionePartita, passando come parametro la quantità di giocatori presenti nella lista giocatori e ritorna un'array che verrà assegnato ad indici
                     int n1 = 0;
-                    for (int j = 0; j < 7; j++)
+                    for (int j = 0; j < 7; j++)//ciclo for che si ripete per le sette giornate 
                     {
-                        Console.WriteLine($"Giornata {j + 1} di 7\n");
-                        for (int i = 0; i < giocatori.Count; i += 2)
+                        Console.WriteLine($"Giornata {j + 1} di 7\n");//scrive a schermo Giornata {j + 1} di 7
+                        for (int i = 0; i < giocatori.Count; i += 2)//ciclo for che si ripete per le parite
                         {
                             n1++;
-                            Console.WriteLine($"Girone {n1} di {indici.Length / 2}");
-                            Console.WriteLine($"Si sfideranno {giocatori[indici[i]].nome} contro {giocatori[indici[i + 1]].nome}");
+                            Console.WriteLine($"Girone {n1} di {indici.Length / 2}");//scrive a schermo il numero del girone nel girone totale
+                            Console.WriteLine($"Si sfideranno {giocatori[indici[i]].nome} contro {giocatori[indici[i + 1]].nome}");//scrive a schermo i gicoatori che si sfidano
 
-                            int valore = p.GestionePartita(ref giocatori, indici[i], indici[i + 1]);//invoca la funzione GestionePartita e il valore che ritorna viene assegnato ad risposte[5]
+                            int valore = p.GestionePartita(ref giocatori, indici[i], indici[i + 1]);//invoca il metodo GestionePartita ,passando come parametro l'array di giocatori e gli indici dei giocatori della partita, e il valore che ritorna viene assegnato ad risposte[5]
                             if (valore == 2)//nel caso in cui il valore ritornato corrisponde a 2
                             {
                                 Console.WriteLine($"in questa partita ha vinto la squadra {giocatori[indici[i]].nome}");//viene scritto a schermo che la prima squadra delle due squadre della partita, ha vinto 
@@ -500,25 +500,25 @@ namespace Fantacalcio
                             {
                                 Console.WriteLine("Questa partita è terminata in pareggio");//viene scritto a schermo che la partita è terminata con il pareggio delle due squadre
                             }
-                            giocatori[indici[i]].punteggio = 0;
-                            giocatori[indici[i+1]].punteggio = 0;
+                            giocatori[indici[i]].punteggio = 0;//pone a 0 il punteggio del giocatore in indici[i]
+                            giocatori[indici[i + 1]].punteggio = 0;//pone a 0 il punteggio del giocatore in indici[i+1]
                         }
-                        n1 = 0;
+                        n1 = 0;//pone a 0 n1
                     }
-                    p.ClassificaFinale(ref giocatori);
-                    for (int d  = 0; d < giocatori.Count; d++)
+                    p.ClassificaFinale(ref giocatori);//invoca il metodo ClassificaFinale e passa come parametro il riferimento alla lista giocatori
+                    for (int d = 0; d < giocatori.Count; d++)//ciclo for che si ripete per la quantità di giocatori presenti nella lista giocatori
                     {
-                        Console.WriteLine($"In {d+1}° posizione abbiamo {giocatori[d].nome}");
+                        Console.WriteLine($"In {d + 1}° posizione abbiamo {giocatori[d].nome}");//scrive a schermo la posizione ed il nome del giocatore
                     }
-                    Console.WriteLine("Scrivi yes per terminare il campionato");
-                    risposta = Console.ReadLine();
-                } while (risposta != "yes" && risposta != "y");
-                p.ClassificaFinale(ref giocatori);
-                for (int d = 0; d < giocatori.Count; d++)
+                    Console.WriteLine("Scrivi yes per terminare il campionato");//scrive a schermo "Scrivi yes per terminare il campionato"
+                    risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                } while (risposta != "yes" && risposta != "y");//ciclo che si ripete fino a quanto risposta è diversa da yes o y
+                p.ClassificaFinale(ref giocatori);//invoca il metodo ClassificaFinale e passa come parametro il riferimento alla lista giocatori
+                for (int d = 0; d < giocatori.Count; d++)//ciclo for che si ripete per la quantità di giocatori presenti nella lista giocatori
                 {
-                    Console.WriteLine($"In {d + 1}° posizione abbiamo {giocatori[d].nome}");
+                    Console.WriteLine($"In {d + 1}° posizione abbiamo {giocatori[d].nome}");//scrive a schermo la posizione ed il nome del giocatore
                 }
-                Console.WriteLine("Grazie per aver giocato");
+                Console.WriteLine("Grazie per aver giocato");//scrive a schermo la posizione ed il nome del giocatore
             }
         }
         private static bool ControlloQuantità(string risposta)//metodo che controlla il valore inserito da tastiera dall'utente e ritorna un valore booleano
