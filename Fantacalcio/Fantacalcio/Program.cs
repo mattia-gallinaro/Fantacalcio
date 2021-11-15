@@ -179,17 +179,17 @@ namespace Fantacalcio
         public int ControlloGiocatoreFormazione(ref List<Calciatore> calciatores, string risposta)//metodo per controllare se il calciatore che il giocatore vuole inserire nella formazione gli appertiene o è già stato assegnato 
         {
             int n = -1;//variabile che contiene l'indice del calciatore della rosa da assegnare nelle formazione
-            for(int i = 0; i < calciatores.Count; i++)//ciclo for che si ripete fino a quando 
+            for(int i = 0; i < calciatores.Count; i++)//ciclo for che si ripete per tutti i calciatori presenti in calciatores
             {
-                if(calciatores[i].nome_e_cognome == risposta)
+                if(calciatores[i].nome_e_cognome == risposta)//controlla che risposta corrisponde ad uno nomi del calciatore
                 {
-                    if (!calciatores[i].gia_assegnato)
+                    if (!calciatores[i].gia_assegnato)//controlla se il valore di calciatores[i].gia_assegnato è false
                     {
-                        n = i;
+                        n = i;//assegna i ad n
                     }
                 }        
             }
-            return n;
+            return n;//ritorna il valore di n
         }
             
         public void AssegnazioneFormazione(ref List<Calciatore> calciatores, int indice_c)
@@ -358,7 +358,7 @@ namespace Fantacalcio
                 {
                     Console.WriteLine("inserisci il nome del " + (i + 1) + "° giocatore");//scrive a schermo il contenuto fra le virgolette
                     risposta = Console.ReadLine();//viene assegnato nella variabile risposta ciò che l'utente ha scritto a schermo
-                    if (g.ControlloNomeInserito(risposta, nomigiocatori))//invoca la funzione ControlloNomeInserito, se ritorna true allora il nome non rispetta le condizioni 
+                    if (g.ControlloNomeInserito(risposta, nomigiocatori))//invoca il metodo ControlloNomeInserito, se ritorna true allora il nome non rispetta le condizioni 
                     {
                         i--;//diminuisce di 1 il valore di i per far ripete l'inserimento del nome
                     }
@@ -371,45 +371,45 @@ namespace Fantacalcio
                 List<Giocatori> giocatori = new List<Giocatori>();//creo la lista giocatori di tipo Giocatori
                 for (int i = 0; i < nomigiocatori.Length; i++)//ciclo for che si ripete per tutti i giocatori
                 {
-                    giocatori.Add(new Giocatori());
-                    giocatori[i].nome = nomigiocatori[i];
-                    giocatori[i].crediti = 1100;
+                    giocatori.Add(new Giocatori());//aggiunge un nuovo elemento alla lista giocatori
+                    giocatori[i].nome = nomigiocatori[i];//all'elemento appena aggiunto assegna il nome in corrispondenza dell'array nomigiocaotiri nel punto i
+                    giocatori[i].crediti = 1100;//assegna ai crediti dell'elemento valore pari a 1100
                 }
-                int[] prezzo = new int[giocatori.Count];
-                int indice;
-                int posizione = -1;
-                do
+                int[] prezzo = new int[giocatori.Count];//array in cui verranno inserite le puntate dei giocatori e avrà grandezza pari alla quantità del numero di elementi nella lista giocatori
+                int indice;//variabile in cui viene assegnato l'indice del giocatore che compra il calciatore messo all'asta
+                int posizione = -1;//variabile in cui viene inserito l'indice del calciatore dell'asta da inserire 
+                do//ciclo che si ripete fino a quando l'utente non inserisce uno dei quattro casi posti nella condizione
                 {
-                    risposta = "";
-                    Console.WriteLine("Inserisci il nome del calciatore da mettere all'asta (es mauro juan)");
-                    risposta = Console.ReadLine();
-                    posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);
-                    while (posizione < 0)
+                    risposta = "";//riporto a vuoto il valore di risposta
+                    Console.WriteLine("Inserisci il nome del calciatore da mettere all'asta (es mauro juan)");//scrive a schermo Inserisci il nome del calciatore da mettere all'asta (es mauro juan)
+                    risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                    posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);//invoca il metodo ControlloCalciatoreAsta passando come parametri il riferimento all'array calciatori e la stringa risposta che ritorna un valore intero
+                    while (posizione < 0)//continua a ripetere il ciclo fino a quando l'utente non inserisce un calciatore della lista calciatore e che non sia già stato assegnato
                     {
-                        Console.WriteLine("Il giocatore inserito non esiste oppure e' gia' stato assegnato\n Inserisci un'altro giocatore");
-                        risposta = Console.ReadLine();
-                        posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);
+                        Console.WriteLine("Il giocatore inserito non esiste oppure e' gia' stato assegnato\n Inserisci un'altro giocatore");//scrive a schermo Il giocatore inserito non esiste oppure e' gia' stato assegnato\n Inserisci un'altro giocatore
+                        risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
+                        posizione = c.ControlloCalciatoreAsta(ref calciatori, risposta);//invoca il metodo ControlloCalciatoreAsta passando come parametri il riferimento all'array calciatori e la stringa risposta che ritorna un valore intero
                     }
                     int i;
-                    for (i = 0; i < giocatori.Count; i++)
+                    for (i = 0; i < giocatori.Count; i++)//ciclo for che si ripete per tutti i giocatori presenti nella lista giocatori
                     {
-                        do
+                        do//si ripete fino a quando il prezzo[i] è maggiore di 110
                         {
-                            Console.WriteLine($"Giocatore {giocatori[i].nome} inserisci il prezzo per l'asta per il calciatore");
-                            prezzo[i] = giocatori[i].ControlloPrezzoInserito();
+                            Console.WriteLine($"Giocatore {giocatori[i].nome} inserisci il prezzo per l'asta per il calciatore");//scrive a schermo Giocatore {giocatori[i].nome} inserisci il prezzo per l'asta per il calciator
+                            prezzo[i] = giocatori[i].ControlloPrezzoInserito();//invoca il metodo ControlloPrezzoInserito che ritorna un valore intero da assegnare a prezzo[i]
                         } while (prezzo[i] > 110);
                     }
-                    indice = g.Asta(prezzo);
-                    Console.WriteLine($"{giocatori[indice].nome} ha comprato il calciatore {calciatori[posizione].nome_e_cognome}");
-                    giocatori[indice].AssegnazioneRosa(ref calciatori, posizione, prezzo[indice]);
-                    Console.WriteLine($"{giocatori[indice].crediti}");
-                    if (!g.ControlloRose(ref giocatori))
+                    indice = g.Asta(prezzo);//invoca il metodo Asta della classe Giocatore passando come parametro l'array prezzo ed il valore intero ritornato viene assegnato ad indice
+                    Console.WriteLine($"{giocatori[indice].nome} ha comprato il calciatore {calciatori[posizione].nome_e_cognome}");//scrive a schermo {giocatori[indice].nome} ha comprato il calciatore {calciatori[posizione].nome_e_cognome
+                    giocatori[indice].AssegnazioneRosa(ref calciatori, posizione, prezzo[indice]);//invoca il metodo AssegnazioneRosa passando come parametro il riferimento alla lista calciatori, posizione e prezzo[indice]
+                    Console.WriteLine($"{giocatori[indice].crediti}");//scrive a schermo i crediti rimanemti del giocatore
+                    if (!g.ControlloRose(ref giocatori))//invoca il metodo ControlloRose della classe Giocatori che ritorna un valore booleano 
                     {
-                        Console.WriteLine("Vuoi terminare l'asta?\n Se si allora scrivi yes \n in caso tu voglia continuare l'asta");
-                        risposta = Console.ReadLine();
+                        Console.WriteLine("Vuoi terminare l'asta?\n Se si allora scrivi yes \n in caso tu voglia continuare l'asta");//scrive a schermo Vuoi terminare l'asta?\n Se si allora scrivi yes \n in caso tu voglia continuare l'asta
+                        risposta = Console.ReadLine();//assegna a risposta ciò che l'utente scrive a schermo
                     }
                 } while (risposta != "Yes" && risposta != "Y" && risposta != "yes" && risposta != "y");
-                Console.WriteLine("Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3");
+                Console.WriteLine("Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3");//scrive a schermo Ogni giocatore avra' una formazione composta da 11 giocatori\n la formazione per ciascun giocatore si basa sul modulo 4-3-3
                 //chiedo all'utente le formazioni di ogni giocatore
                 int g_indice;
                 for (g_indice = 0; g_indice < giocatori.Count; g_indice++)
