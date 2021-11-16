@@ -346,7 +346,7 @@ namespace Fantacalcio
                     Console.WriteLine($"{calciatori[i].nome_e_cognome}");//scrive a schermo il valore dell'attributo nome_e_cognome del calciatore in posizione i
                 }
                 string risposta;//stringa 
-                do//si ripete fino a quando il valore che viene ritornato dal metodo ControlloQuantità() corrisponde a false
+                do//si ripete fino a quando il valore che viene ritornato dal metodo ControlloQuantità() corrisponde a false 
                 {
                     Console.WriteLine("Quanti giocatori vuoi inserire ? Il numero minimo e' 2 ed il massimo e' 10");//scrive a schermo i
                     risposta = Console.ReadLine();//viene assegnato nella variabile risposta ciò che l'utente ha scritto a schermo
@@ -420,7 +420,7 @@ namespace Fantacalcio
                         Console.WriteLine($"{giocatori[g_indice].Rosa[j].nome_e_cognome}");
 
                     }
-                    for (int i = 0; i < 12; i++)//ciclo for che si ripete per l'inserimento delle formazioni per i giocatori
+                    for (int i = 0; i < 11; i++)//ciclo for che si ripete per l'inserimento delle formazioni per i giocatori
                     {
                         if (i == 0)//controlla se i corrisponde a 0 per l'inserimento del portiere
                         {
